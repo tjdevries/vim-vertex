@@ -99,12 +99,12 @@ function RemoveMarkers()
         echo ordered_markers
     endif
 
-    let g:secret_markers_file = expand('%') . '.secret_markers'
+    let g:secret_markers_file = '.' . expand('%') . '.secret_markers'
 
     " Send all output to the secret markers file
     execute 'redir! > ' g:secret_markers_file
     for line in ordered_markers
-        echo line ':' getline(line)
+        silent echo line ':' getline(line)
         " '^^^^^' getline(line - 1) 'vvvvv' getline(line + 1)
     endfor
     " End sending output
