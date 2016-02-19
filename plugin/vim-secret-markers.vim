@@ -143,9 +143,19 @@ function InsertMarkersFromDict()
     call GetMarkersFromSecretFile()
 
     for line_dict in g:secret_markers_dict
+        " Get the line number that we're going to insert our fold on
         let line_num = keys(line_dict)[0]
-        goto line_num
-        " execute 'i' . line_dict[line_num] . '<CR>'
-        " execute line_num . ',' . line_num . 's/^/' . line_dict[line_num] . '\\n/'
+
+        " Make sure that if the folds are at the end of the file, we can still
+        " get to them:
+        let max_line = line('$')
+        while max_line < line_num
+            " Open a new line at the bottom of the file
+            normal Go
+            let max_line = line('$')
+        endwhile
+
+        " Insert at the beginning of the line, and then add a return character
+        execute line_num . ',' . line_num . 's/^/' . line_dict[line_num] . '\r/'
     endfor
 endfunction
