@@ -13,5 +13,10 @@ Say for example you are working in a version controlled Python file in some repo
 For this plugin to be useful to you, these things should be true.
 
 1. `foldmethod=marker`
+2. webapi - JSON encoding
 
-This plugin should be `foldmarker` agnostic. If it is not, please let me know.
+Eventually, this plugin should be `foldmarker` agnostic. I know it is not currently :D
+
+## Testing
+
+Attempting to write tests with Vader
