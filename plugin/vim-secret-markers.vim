@@ -27,8 +27,11 @@ function FindMarkers()
     let fold_number = 0
     while search('{{{', 'W') > 0
         let line_num = line('.')
+        let line_content = getline(line_num)
+        let line_dict = {}
+        let line_dict[line_num] = line_content
         call add(start_lines, line_num)
-        call add(ordered_markers, line_num)
+        call add(ordered_markers, line_dict)
 
         let fold_number = fold_number + 1
     endwhile
@@ -37,16 +40,20 @@ function FindMarkers()
     let end_lines = []
     while search('}}}', 'W') > 0
         let line_num = line('.')
+        let line_content = getline(line_num)
+        let line_dict = {}
+        let line_dict[line_num] = line_content
+
         call add(end_lines, line_num)
 
-        while ordered_markers[ordered_index] < line_num
+        while keys(ordered_markers[ordered_index])[0] < line_num
             let ordered_index = ordered_index + 1
 
             if ordered_index == len(ordered_markers)
                 break
             endif
         endwhile
-        call insert(ordered_markers, line_num, ordered_index)
+        call insert(ordered_markers, line_dict, ordered_index)
     endwhile
 
     if g:debug_secret_markers
@@ -103,24 +110,42 @@ function RemoveMarkers()
 
     " Send all output to the secret markers file
     execute 'redir! > ' g:secret_markers_file
-    for line in ordered_markers
-        silent echo line ':' getline(line)
-        " '^^^^^' getline(line - 1) 'vvvvv' getline(line + 1)
-    endfor
+    silent echo 'let g:secret_markers_dict = '
+        \ webapi#json#encode(ordered_markers)
+
     " End sending output
     silent! redir END
 
-    for line_to_delete in reverse(ordered_markers)
+    echo webapi#json#encode(fold_combinations)
+
+    for line_dict in reverse(ordered_markers)
+        let line_to_delete = keys(line_dict)[0]
         exec line_to_delete . ',' . line_to_delete . 'd'
     endfor
 endfunction
 
-function InsertMarkers()
+function GetMarkersFromSecretFile()
+    " This function sets the g:secret_markers_dict variable
+    "   Format: [ {line_num: line_contents}, {line_num: line_contents}, ... ]
     setlocal nofoldenable
 
-    echo system(
-        \'while read line; do'
-        \ . ' echo $line; '
-        \ . ' done <' . expand(g:secret_markers_file)
-    \)
+    exec "source " . g:secret_markers_file
+    if g:debug_secret_markers
+        echo g:secret_markers_dict
+    endif
+endfunction
+
+function InsertMarkersFromDict()
+    " This function will insert the lines back into the file
+    "   It calls GetMarkersFromSecretFile first to set the
+    "       g:secret_markers_dict
+    "   Then inserts them into the file!
+    call GetMarkersFromSecretFile()
+
+    for line_dict in g:secret_markers_dict
+        let line_num = keys(line_dict)[0]
+        goto line_num
+        " execute 'i' . line_dict[line_num] . '<CR>'
+        " execute line_num . ',' . line_num . 's/^/' . line_dict[line_num] . '\\n/'
+    endfor
 endfunction
