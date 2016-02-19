@@ -6,8 +6,10 @@ if exists("g:loaded_secret_markers")
   finish
 endif
 
+" Global variable definitions
 let g:loaded_secret_markers = 1
 let g:debug_secret_markers = 0
+let g:secret_markers_file = '.' . expand('%') . '.secret_markers'
 
 function FindMarkers()
     " Store line number
@@ -99,8 +101,6 @@ function RemoveMarkers()
         echo ordered_markers
     endif
 
-    let g:secret_markers_file = '.' . expand('%') . '.secret_markers'
-
     " Send all output to the secret markers file
     execute 'redir! > ' g:secret_markers_file
     for line in ordered_markers
@@ -113,4 +113,14 @@ function RemoveMarkers()
     for line_to_delete in reverse(ordered_markers)
         exec line_to_delete . ',' . line_to_delete . 'd'
     endfor
+endfunction
+
+function InsertMarkers()
+    setlocal nofoldenable
+
+    echo system(
+        \'while read line; do'
+        \ . ' echo $line; '
+        \ . ' done <' . expand(g:secret_markers_file)
+    \)
 endfunction
