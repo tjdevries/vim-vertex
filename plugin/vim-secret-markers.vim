@@ -122,7 +122,7 @@ function RemoveMarkers()
     " End sending output
     silent! redir END
 
-    echo webapi#json#encode(fold_combinations)
+    silent echo webapi#json#encode(fold_combinations)
 
     for line_dict in reverse(ordered_markers)
         let line_to_delete = keys(line_dict)[0]
