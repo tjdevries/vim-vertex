@@ -69,7 +69,10 @@ function FindMarkers()
     let fold_combinations = {}
     let solved = 0
     while solved < fold_number
-        if start_lines[start_ind] < end_lines[end_ind]
+        " Check that we have a valid index still (i.e. if not, this means
+        "   end_lines happen after all of the start_lines
+        "   and also if start < end
+        if start_ind < len(start_lines) && start_lines[start_ind] < end_lines[end_ind]
             let start_ind = start_ind + 1
 
             if start_ind >= len(start_lines)
@@ -159,3 +162,5 @@ function InsertMarkersFromDict()
         execute line_num . ',' . line_num . 's/^/' . line_dict[line_num] . '\r/'
     endfor
 endfunction
+
+" vim: set foldlevel=4:
