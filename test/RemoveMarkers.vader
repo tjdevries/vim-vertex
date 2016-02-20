@@ -1,0 +1,32 @@
+####################
+# Test that I find all the markers in a file
+####################
+
+Given (Some text with no markers in it):
+  hello
+  this is in the fold
+  this is outside of the fold
+
+Execute (Remove the folds [there are none]):
+  call RemoveMarkers()
+
+Expect (Nothing changed):
+  hello
+  this is in the fold
+  this is outside of the fold
+
+
+Given (Some text with a single set of markers in it):
+  first line
+  {{{
+  this was in a fold
+  }}}
+  no longer in a fold
+
+Execute (Remove the folds):
+  call RemoveMarkers()
+
+Expect (Folds removed):
+  first line
+  this was in a fold
+  no longer in a fold
