@@ -15,6 +15,7 @@ Expect (Nothing changed):
   this is in the fold
   this is outside of the fold
 
+#####
 
 Given (Some text with a single set of markers in it):
   first line
@@ -30,6 +31,8 @@ Expect (Folds removed):
   first line
   this was in a fold
   no longer in a fold
+
+#####
 
 Given (Some text with embedded markers in it):
   first line
@@ -52,5 +55,39 @@ Expect (Nested folds removed):
     first fold again
   outside of folds
 
+#####
+
+Given (Text after the markers):
+  first line
+  {{{ this is the fold
+    in the fold
+  }}}
+  no more folding
+
+Execute (Remove markers, including info):
+  call RemoveMarkers()
+
+Expect (Lines, including info, removed):
+  first line
+    in the fold
+  no more folding
+
+#####
+
+Given (Some text before  markers on the same line):
+  first line
+  line with markers {{{
+    this is inside the fold
+  }}}
+  no longer in the fold
+
+Execute (Remove the fold):
+  call RemoveMarkers()
+
+Expect (Information before the {{{ to be removed):
+  first line
+  line with markers
+    this is inside the fold
+  no longer in the fold
 
 # vim: set foldlevel=4:
