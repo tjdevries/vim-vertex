@@ -174,4 +174,10 @@ function InsertMarkersFromDict()
     endfor
 endfunction
 
+function ParseLine()
+    if exists("&commentstring")
+        echo &commentstring
+    endif
+endfunction
+
 " vim: set foldlevel=4:
