@@ -11,6 +11,9 @@ let g:loaded_secret_markers = 1
 let g:debug_secret_markers = 0
 let g:secret_markers_file = expand('%:h') . '/.' . expand('%:t') . '.secret_markers'
 
+let s:fold_marker_left = split(&foldmarker, ',')[0]
+let s:fold_marker_right = split(&foldmarker, ',')[1]
+
 function FindMarkers()
     " Store line number
     let initial_pos = line('.')
@@ -25,7 +28,7 @@ function FindMarkers()
 
     let start_lines = []
     let fold_number = 0
-    while search('{{{', 'W') > 0
+    while search(s:fold_marker_left, 'W') > 0
         let line_num = line('.')
         let line_content = getline(line_num)
         let line_dict = {}
@@ -38,7 +41,7 @@ function FindMarkers()
 
     goto 1
     let end_lines = []
-    while search('}}}', 'W') > 0
+    while search(s:fold_marker_right, 'W') > 0
         let line_num = line('.')
         let line_content = getline(line_num)
         let line_dict = {}
