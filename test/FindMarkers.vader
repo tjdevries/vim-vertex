@@ -1,0 +1,29 @@
+Given (Some text with no markers):
+  this line
+  another line
+  final line
+
+Execute (Find no markers):
+  let res = FindMarkers()
+
+  " Fold combinations empty
+  AssertEqual res[0], {}
+  " Order combinations empty
+  AssertEqual res[1], []
+
+########################################
+
+Given (Some text with a simple markers):
+  not in a fold
+  {{{
+    in a fold
+  }}}
+  not in a fold
+
+Execute (Find 2 markers):
+  let res = FindMarkers()
+
+  " Fold combinations should only have the 0th combo, with the correct lines
+  AssertEqual res[0], {'0': {'start': 2, 'end': 4}}
+  " Order markers should have them show up in order
+  AssertEqual res[1], [{'2': '{{{'}, {'4': '}}}'}]
