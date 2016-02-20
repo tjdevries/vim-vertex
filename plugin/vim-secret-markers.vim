@@ -126,7 +126,15 @@ function RemoveMarkers()
 
     for line_dict in reverse(ordered_markers)
         let line_to_delete = keys(line_dict)[0]
-        exec line_to_delete . ',' . line_to_delete . 'd'
+        " If we're going to delete the whole line, we don't even want it to
+        " show up, so we just delete it
+        if getline(line_to_delete) == line_dict[line_to_delete]
+            exec line_to_delete . ',' . line_to_delete . 'd'
+        else
+            " Otherwise, we're going to only delete from the start of our
+            " comment and mark until the end of the line
+            exec line_to_delete . ',' . line_to_delete . 's/' . line_dict[line_to_delete] . '//'
+        endif
     endfor
 endfunction
 
