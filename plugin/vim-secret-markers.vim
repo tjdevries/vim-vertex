@@ -30,7 +30,7 @@ function FindMarkers()
     let fold_number = 0
     while search(s:fold_marker_left, 'W') > 0
         let line_num = line('.')
-        let line_content = getline(line_num)
+        let line_content = ParseLine(line_num)
         let line_dict = {}
         let line_dict[line_num] = line_content
         call add(start_lines, line_num)
@@ -43,7 +43,7 @@ function FindMarkers()
     let end_lines = []
     while search(s:fold_marker_right, 'W') > 0
         let line_num = line('.')
-        let line_content = getline(line_num)
+        let line_content = ParseLine(line_num)
         let line_dict = {}
         let line_dict[line_num] = line_content
 
@@ -133,6 +133,7 @@ function RemoveMarkers()
         else
             " Otherwise, we're going to only delete from the start of our
             " comment and mark until the end of the line
+            echo "Not the same line " . line_to_delete
             exec line_to_delete . ',' . line_to_delete . 's/' . line_dict[line_to_delete] . '//'
         endif
     endfor
@@ -174,9 +175,31 @@ function InsertMarkersFromDict()
     endfor
 endfunction
 
-function ParseLine()
+function ParseLine(line_num)
+    set magic
     if exists("&commentstring")
-        echo &commentstring
+        " echo &commentstring
+        let [l, r] = Surroundings()
+
+        " TODO: Improve this searching?
+        let commentstart = match(getline(a:line_num), l)
+        let current_line = getline(a:line_num) 
+        execute "let return_line = current_line[" . commentstart . ":]"
+        echo 'return_line (' . a:line_num . '): ' . return_line
+
+        " If there is only white space in front of our return_line,
+        "   then we can just return the whole line
+        " Else, we just want to return from the comment onwards
+        if return_line =~ '^\s\+' . return_line
+            echo 'line: ' . a:line_num . ' has only whitespace in front'
+            return current_line
+        else
+            return return_line
+        endif
+    else
+        " If I don't know what a comment is, then I can't differentiate
+        " between where the comment starts and anything else.
+        return getline(a:line_num)
     endif
 endfunction
 
