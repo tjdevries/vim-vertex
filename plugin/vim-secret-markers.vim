@@ -3,7 +3,8 @@
 " Version:      0.1
 
 if exists("g:loaded_secret_markers")
-  finish
+  " finish
+  echo "already loaded once"
 endif
 
 " Global variable definitions
@@ -14,7 +15,7 @@ let g:secret_markers_file = expand('%:h') . '/.' . expand('%:t') . '.secret_mark
 let s:fold_marker_left = split(&foldmarker, ',')[0]
 let s:fold_marker_right = split(&foldmarker, ',')[1]
 
-function FindMarkers()
+function! FindMarkers()
     " Store line number
     let initial_pos = line('.')
     if g:debug_secret_markers
@@ -102,7 +103,7 @@ function FindMarkers()
     return [ fold_combinations, ordered_markers ]
 endfunction
 
-function RemoveMarkers()
+function! RemoveMarkers()
     setlocal nofoldenable
 
     let res = FindMarkers()
@@ -139,7 +140,7 @@ function RemoveMarkers()
     endfor
 endfunction
 
-function GetMarkersFromSecretFile()
+function! GetMarkersFromSecretFile()
     " This function sets the g:secret_markers_dict variable
     "   Format: [ {line_num: line_contents}, {line_num: line_contents}, ... ]
     setlocal nofoldenable
@@ -150,7 +151,7 @@ function GetMarkersFromSecretFile()
     endif
 endfunction
 
-function InsertMarkersFromDict()
+function! InsertMarkersFromDict()
     " This function will insert the lines back into the file
     "   It calls GetMarkersFromSecretFile first to set the
     "       g:secret_markers_dict
@@ -175,7 +176,7 @@ function InsertMarkersFromDict()
     endfor
 endfunction
 
-function ParseLine(line_num)
+function! ParseLine(line_num)
     " This function returns a string of what should be removed from the line
     " Returns:
     "   Empty string ('') - There was nothing in the line that matched a fold marker
@@ -184,7 +185,7 @@ function ParseLine(line_num)
     "   Subset of line    - Whitespace before comment through end of line (not
     "                       including the line ending)
     set magic
- 
+
     let current_line = getline(a:line_num) 
 
     " If there are no fold in the current line, return an empty string
