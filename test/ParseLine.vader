@@ -1,0 +1,56 @@
+#########################
+# Testing ParseLine
+#########################
+
+Given (Text with no markers):
+  this is just a normal line of text
+
+Execute:
+  let res = ParseLine(1)
+  Assert res == ''
+
+########################################
+
+Given (Text with just a marker):
+  " {{{
+  " }}}
+
+Execute:
+  Assert ParseLine(1) == getline(1)
+  Assert ParseLine(2) == getline(2)
+
+########################################
+
+Given (Text with markers with spaces before it):
+  " {{{
+      " {{{
+      " }}}
+  " }}}
+
+Execute:
+  Assert ParseLine(1) == getline(1)
+  Assert ParseLine(2) == getline(2)
+  Assert ParseLine(3) == getline(3)
+  Assert ParseLine(4) == getline(4)
+
+########################################
+
+Given (Markers wih no space between comment):
+  "{{{
+      "}}}
+
+Execute:
+  Assert ParseLine(1) == getline(1)
+  Assert ParseLine(2) == getline(2)
+
+########################################
+
+Given (Text before comment):
+  echo('hello')   " {{{
+  " }}}
+
+Execute:
+  " TODO
+  Assert ParseLine(2) == getline(2)
+
+# vim: set foldlevel=4:

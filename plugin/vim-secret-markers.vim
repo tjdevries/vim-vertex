@@ -176,24 +176,47 @@ function InsertMarkersFromDict()
 endfunction
 
 function ParseLine(line_num)
+    " This function returns a string of what should be removed from the line
+    " Returns:
+    "   Empty string ('') - There was nothing in the line that matched a fold marker
+    "   Entire line       - If the whole line consists purely of a comment + 
+    "                       fold_marker, then the entire line will be return
+    "   Subset of line    - Whitespace before comment through end of line (not
+    "                       including the line ending)
     set magic
+ 
+    let current_line = getline(a:line_num) 
+
+    " If there are no fold in the current line, return an empty string
+    if current_line !~ s:fold_marker_right && current_line !~ s:fold_marker_left
+        return ''
+    endif
+
     if exists("&commentstring")
         " echo &commentstring
         let [l, r] = Surroundings()
 
         " TODO: Improve this searching?
         let commentstart = match(getline(a:line_num), l)
-        let current_line = getline(a:line_num) 
         execute "let return_line = current_line[" . commentstart . ":]"
-        echo 'return_line (' . a:line_num . '): ' . return_line
+        if g:debug_secret_markers
+            echom 'return_line (' . a:line_num . '): ' . return_line
+        endif
 
         " If there is only white space in front of our return_line,
         "   then we can just return the whole line
         " Else, we just want to return from the comment onwards
-        if return_line =~ '^\s\+' . return_line
-            echo 'line: ' . a:line_num . ' has only whitespace in front'
+        if return_line =~ '^\s*' . return_line
+            if g:debug_secret_markers
+                echom 'line: ' . a:line_num . ' has only whitespace in front'
+            endif
+
             return current_line
         else
+            if g:debug_secret_markers
+                echom 'line: ' . a:line_num . ' has some text in front of it'
+            endif
+
             return return_line
         endif
     else
@@ -201,6 +224,11 @@ function ParseLine(line_num)
         " between where the comment starts and anything else.
         return getline(a:line_num)
     endif
+endfunction
+
+function! Surroundings() abort
+  return split(get(b:, 'commentary_format', substitute(substitute(
+        \ &commentstring, '\S\zs%s',' %s','') ,'%s\ze\S', '%s ', '')), '%s', 1)
 endfunction
 
 " vim: set foldlevel=4:
