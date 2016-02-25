@@ -201,7 +201,10 @@ function! ParseLine(line_num)
         let commentstart = match(getline(a:line_num), l)
         execute "let return_line = current_line[" . commentstart . ":]"
         if g:debug_secret_markers
-            echom 'return_line (' . a:line_num . '): ' . return_line
+            echom 'Parsing line: `' . getline(a:line_num) . '`'
+            echom ' l, r: [' . l . ', ' .  r . ']'
+            echom ' commentstart -> ' . commentstart
+            echom ' return_line (' . a:line_num . '): `' . return_line . '`'
         endif
 
         " If there is only white space in front of our return_line,
