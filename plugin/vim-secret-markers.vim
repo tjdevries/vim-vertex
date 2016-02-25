@@ -180,13 +180,13 @@ function! ParseLine(line_num)
     " This function returns a string of what should be removed from the line
     " Returns:
     "   Empty string ('') - There was nothing in the line that matched a fold marker
-    "   Entire line       - If the whole line consists purely of a comment + 
+    "   Entire line       - If the whole line consists purely of a comment +
     "                       fold_marker, then the entire line will be return
     "   Subset of line    - Whitespace before comment through end of line (not
     "                       including the line ending)
     set magic
 
-    let current_line = getline(a:line_num) 
+    let current_line = getline(a:line_num)
 
     " If there are no fold in the current line, return an empty string
     if current_line !~ s:fold_marker_right && current_line !~ s:fold_marker_left
