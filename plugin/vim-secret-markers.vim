@@ -214,15 +214,15 @@ function! ParseLine(line_num)
         " If there is only white space in front of our return_line,
         "   then we can just return the whole line
         " Else, we just want to return from the comment onwards
-        if return_line =~ '^\s*' . return_line
+        if current_line =~ '^\s*' . return_line
             if g:debug_secret_markers
-                echom 'line: ' . a:line_num . ' has only whitespace in front'
+                echom ' line: ' . a:line_num . ' has only whitespace in front'
             endif
 
             return current_line
         else
             if g:debug_secret_markers
-                echom 'line: ' . a:line_num . ' has some text in front of it'
+                echom ' line: ' . a:line_num . ' has some text in front of it'
             endif
 
             return return_line
