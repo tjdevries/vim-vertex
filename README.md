@@ -1,12 +1,49 @@
 # vim-secret-markers
 
-This plugin allows you to keep your markers out of version control so that the un-enlightened (i.e. not VIM users :) ) do not have the code cluttered with our markers for folding.
+Remove and insert Vim's `foldmarker`s.
 
-The main idea is that you'd like to add folding to documents that regular methods don't work out that great (i.e. indent, or maybe even expr). You might also be adding detailed section names for yourself to help you navigate the code, but aren't really necessary ("Here lie the setters", "Here lie the getters", "Here be dragons", etc.).
+## What It Does
 
-## How it works
+This plugin allows you to keep your markers out of version control so that the non-VIM users do not have the code cluttered with Vim  foldmarkers.
 
-Say for example you are working in a version controlled Python file in some repository that you're actually sharing with other people (this is when I got the same idea). You want to have VIM folds when you open up the file, but you have some Notepad++ guys, a Gedit guy, etc. that don't use VIM. That's where this plugin comes in handy.
+The main idea is to add the capability of having `foldmarkers` inside of files, even version controlled files, but not having others have to view them. I think this is best done via example:
+
+### Example
+
+```python
+# This is a python file
+
+# Regular comment
+def new_function():
+    pass
+
+# {{{
+'''docstring here'''
+# }}}
+
+# Comment with a fold after it {{{ this stuff will go away
+class NewClass:
+    def __init__(self):
+        pass
+    # }}}
+```
+
+After running `RemoveMarkers()`, vim-secret-markers will remove all of the fold markers. It will then look like the file below.
+
+```python
+# This is a python file
+
+# Regular comment
+def new_function():
+    pass
+
+'''docstring here'''
+
+# Come with a fold after it
+class NewClass:
+    def __init__(self):
+        pass
+```
 
 ## Requirements
 
