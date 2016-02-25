@@ -11,7 +11,7 @@ Execute:
 
 ########################################
 
-Given (Text with just a marker):
+Given vim (Text with just a marker):
   " {{{
   " }}}
 
@@ -21,7 +21,7 @@ Execute:
 
 ########################################
 
-Given (Text with markers with spaces before it):
+Given vim (Text with markers with spaces before it):
   " {{{
       " {{{
       " }}}
@@ -35,7 +35,7 @@ Execute:
 
 ########################################
 
-Given (Markers wih no space between comment):
+Given vim (Markers wih no space between comment):
   "{{{
       "}}}
 
@@ -45,12 +45,33 @@ Execute:
 
 ########################################
 
-Given (Text before comment):
-  echo('hello')   " {{{
+Given vim (Text before comment):
+  echo('hello')" {{{
   " }}}
 
 Execute:
-  " TODO
+  Assert ParseLine(1) ==  '" {{{'
   Assert ParseLine(2) == getline(2)
+
+########################################
+
+Given python (Check with python):
+  # regular python
+    # now a comment after {{{
+  x = 5 + 5
+    # }}}
+
+  # {{{ regular stuff
+  def function():
+    # {{{ indented and folded
+    pass
+    # }}}
+  # }}}
+
+Execute:
+  " TODO: Check all the lines correctly
+  " g/.*/Assert call ParseLine(line('.')) == getline(line('.'))
+
+########################################
 
 # vim: set foldlevel=4:
