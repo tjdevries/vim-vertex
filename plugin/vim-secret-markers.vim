@@ -199,6 +199,10 @@ function! ParseLine(line_num)
 
         " TODO: Improve this searching?
         let commentstart = match(getline(a:line_num), l)
+        if commentstart < 0
+            let commentstart = 0
+        endif
+
         execute "let return_line = current_line[" . commentstart . ":]"
         if g:debug_secret_markers
             echom 'Parsing line: `' . getline(a:line_num) . '`'
