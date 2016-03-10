@@ -56,4 +56,4 @@ Maybe this plugin is now `foldmarker` agnostic. I'm not sure yet. Still working 
 
 ## Testing
 
-Attempting to write tests with Vader
+Attempting to write tests with Vader. I am working on making sure it works well on Travis as well (this is my first project using it).
