@@ -10,7 +10,7 @@ endif
 " Global variable definitions
 let g:loaded_secret_markers = 1
 let g:debug_secret_markers = 0
-let g:secret_markers_file = expand('%:h') . '/.' . expand('%:t') . '.secret_markers'
+let g:secret_markers_file = expand('%:h') . '/._' . expand('%:t') . '.secret_markers'
 
 let s:fold_marker_left = split(&foldmarker, ',')[0]
 let s:fold_marker_right = split(&foldmarker, ',')[1]
