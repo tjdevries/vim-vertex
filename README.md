@@ -39,7 +39,7 @@ def new_function():
 
 '''docstring here'''
 
-# Come with a fold after it
+# Comment with a fold after it
 class NewClass:
     def __init__(self):
         pass
