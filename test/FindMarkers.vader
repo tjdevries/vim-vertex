@@ -26,4 +26,4 @@ Execute (Find 2 markers):
   " Fold combinations should only have the 0th combo, with the correct lines
   AssertEqual res[0], {'0': {'start': 2, 'end': 4}}
   " Order markers should have them show up in order
-  AssertEqual res[1], [{'2': '{{{'}, {'4': '}}}'}]
+  AssertEqual res[1], [{'2': {'content': '{{{', 'append': 0}}, {'4': {'content': '}}}', 'append': 0}}]
