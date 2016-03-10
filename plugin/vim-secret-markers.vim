@@ -33,7 +33,16 @@ function! FindMarkers()
         let line_num = line('.')
         let line_content = ParseLine(line_num)
         let line_dict = {}
-        let line_dict[line_num] = line_content
+        let line_dict[line_num] = {}
+        let line_dict[line_num]['content'] = line_content
+
+        " Check if the line should be appended to the original line or not
+        if getline('.') == line_content
+            let line_dict[line_num]['append'] = 0
+        else
+            let line_dict[line_num]['append'] = 1
+        endif
+
         call add(start_lines, line_num)
         call add(ordered_markers, line_dict)
 
@@ -46,7 +55,15 @@ function! FindMarkers()
         let line_num = line('.')
         let line_content = ParseLine(line_num)
         let line_dict = {}
-        let line_dict[line_num] = line_content
+        let line_dict[line_num] = {}
+        let line_dict[line_num]['content'] = line_content
+
+        " Check if the line should be appended to the original line or not
+        if getline('.') == line_content
+            let line_dict[line_num]['append'] = 0
+        else
+            let line_dict[line_num]['append'] = 1
+        endif
 
         call add(end_lines, line_num)
 
@@ -123,26 +140,26 @@ function! RemoveMarkers()
     " End sending output
     silent! redir END
 
-    silent echo webapi#json#encode(fold_combinations)
+    " silent echo webapi#json#encode(fold_combinations)
 
     for line_dict in reverse(ordered_markers)
-        let line_to_delete = keys(line_dict)[0]
+        let line_to_delete = keys(line_dict)[0]['content']
         " If we're going to delete the whole line, we don't even want it to
         " show up, so we just delete it
-        if getline(line_to_delete) == line_dict[line_to_delete]
+        if getline(line_to_delete) == line_dict[line_to_delete]['content']
             exec line_to_delete . ',' . line_to_delete . 'd'
         else
             " Otherwise, we're going to only delete from the start of our
             " comment and mark until the end of the line
             echo "Not the same line " . line_to_delete
-            exec line_to_delete . ',' . line_to_delete . 's/' . line_dict[line_to_delete] . '//'
+            exec line_to_delete . ',' . line_to_delete . 's/' . line_dict[line_to_delete]['content'] . '//'
         endif
     endfor
 endfunction
 
 function! GetMarkersFromSecretFile()
     " This function sets the g:secret_markers_dict variable
-    "   Format: [ {line_num: line_contents}, {line_num: line_contents}, ... ]
+    "   Format: [ {line_num: {'content': line_contents, 'append': 0/1}}, {line_num: {'content': line_contents, 'append': 0/1}}, ... ]
     setlocal nofoldenable
 
     exec "source " . g:secret_markers_file
@@ -172,7 +189,11 @@ function! InsertMarkersFromDict()
         endwhile
 
         " Insert at the beginning of the line, and then add a return character
-        execute line_num . ',' . line_num . 's/^/' . line_dict[line_num] . '\r/'
+        if line_dict[line_num]['append']
+            execute line_num . ',' . line_num . 's/$/' . line_dict[line_num]['content'] . '/'
+        else
+            execute line_num . ',' . line_num . 's/^/' . line_dict[line_num]['content'] . '\r/'
+        endif
     endfor
 endfunction
 
