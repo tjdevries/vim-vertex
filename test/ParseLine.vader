@@ -71,6 +71,8 @@ Given python (Check with python):
 Execute:
   " TODO: Check all the lines correctly
   " g/.*/Assert call ParseLine(line('.')) == getline(line('.'))
+  " TODO: This currently does not work
+  " Assert ParseLine(2) == '  # now a comment after'
 
 ########################################
 
