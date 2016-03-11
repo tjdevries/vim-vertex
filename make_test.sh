@@ -1,13 +1,21 @@
 #!/bin/bash
 
+debug=0
+
 for filename in ./test/*; do
     echo 'Testing filename ' $filename
-    nvim -n +Vader! $filename > /dev/null  && echo Success || echo Failure
-    # nvim -nu <(cat << VIMRC
+    if [ $debug -eq 0 ]; then
+        nvim -n +Vader! $filename > /dev/null && echo Success || echo Failure
+    else
+        nvim -n +Vader $filename
+    fi
+done
+
+# Alternative method... Not sure I want to do that yet
+# nvim -nu <(cat << VIMRC
 # filetype off
 # set rtp+=~/.config/nvim/plugged/vader.vim
 # set rtp+=.
 # filetype plugin indent on
 # syntax enable
 # VIMRC) +'Vader! ./test/'$filename > /dev/null && echo Success || echo Failure
-done
