@@ -50,7 +50,6 @@ class NewClass:
 For this plugin to be useful to you, these things should be true.
 
 1. `foldmethod=marker`: I'm not really sure why you would be using this otherwise
-2. `webapi`: JSON encoding
 
 Maybe this plugin is now `foldmarker` agnostic. I'm not sure yet. Still working on some other things currently
 
