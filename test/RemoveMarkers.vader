@@ -90,5 +90,5 @@ Expect (Information before the marker to be removed):
     this is inside the fold
   no longer in the fold
 
-  
+
 # vim: set foldlevel=4:
