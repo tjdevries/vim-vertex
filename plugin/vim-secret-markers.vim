@@ -153,12 +153,12 @@ function! RemoveMarkers()
     " Send all output to the secret markers file
     execute 'redir! > ' s:set_markers_file()
     silent echo 'let b:secret_markers_dict = '
-        \ webapi#json#encode(ordered_markers)
+    silent echon ordered_markers
+    " silent echo webapi#json#encode(fold_combinations)
 
     " End sending output
     silent! redir END
 
-    silent echo webapi#json#encode(fold_combinations)
 
     for line_dict in reverse(ordered_markers)
         let line_to_delete = keys(line_dict)[0]
