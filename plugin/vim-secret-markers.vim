@@ -11,8 +11,7 @@ endif
 
 " Global variable definitions
 let g:loaded_secret_markers = 1
-let g:debug_secret_markers = 1
-let g:secret_markers_file = expand('%:h') . '/._' . expand('%:t') . '.secret_markers'
+let g:debug_secret_markers = 0
 
 let s:fold_marker_left = split(&foldmarker, ',')[0]
 let s:fold_marker_right = split(&foldmarker, ',')[1]
@@ -20,6 +19,12 @@ let s:fold_marker_right = split(&foldmarker, ',')[1]
 " {{{ Strip
 function! Strip(input_string)
     return substitute(a:input_string, '^\s*\(.\{-}\)\s*$', '\1', '')
+endfunction
+" }}}
+" {{{ set_markers_file
+" Set the buffer local file location
+function! s:set_markers_file() abort
+    return expand('%:h') . '/._' . expand('%:t') . '.secret_markers'
 endfunction
 " }}}
 " {{{ FindMarkers
@@ -146,8 +151,8 @@ function! RemoveMarkers()
     endif
 
     " Send all output to the secret markers file
-    execute 'redir! > ' g:secret_markers_file
-    silent echo 'let g:secret_markers_dict = '
+    execute 'redir! > ' s:set_markers_file()
+    silent echo 'let b:secret_markers_dict = '
         \ webapi#json#encode(ordered_markers)
 
     " End sending output
@@ -179,13 +184,13 @@ endfunction
 " }}}
 " {{{ GetMarkersFromSecretFile
 function! GetMarkersFromSecretFile()
-    " This function sets the g:secret_markers_dict variable
+    " This function sets the b:secret_markers_dict variable
     "   Format: [ {line_num: {'content': line_contents, 'append': 0/1}}, {line_num: {'content': line_contents, 'append': 0/1}}, ... ]
     setlocal nofoldenable
 
-    exec "source " . g:secret_markers_file
+    exec "source " . s:set_markers_file()
     if g:debug_secret_markers
-        echo g:secret_markers_dict
+        echo b:secret_markers_dict
     endif
 endfunction
 " }}}
@@ -193,11 +198,11 @@ endfunction
 function! InsertMarkersFromDict()
     " This function will insert the lines back into the file
     "   It calls GetMarkersFromSecretFile first to set the
-    "       g:secret_markers_dict
+    "       b:secret_markers_dict
     "   Then inserts them into the file!
     call GetMarkersFromSecretFile()
 
-    for line_dict in g:secret_markers_dict
+    for line_dict in b:secret_markers_dict
         " Get the line number that we're going to insert our fold on
         let line_num = keys(line_dict)[0]
 
