@@ -3,18 +3,26 @@
 " Version:      0.1
 
 if exists("g:loaded_secret_markers")
-  " finish
-  echo "already loaded once"
+    if g:debug_secret_markers == 0
+        echom "Not loading again"
+        finish
+    endif
 endif
 
 " Global variable definitions
 let g:loaded_secret_markers = 1
-let g:debug_secret_markers = 0
+let g:debug_secret_markers = 1
 let g:secret_markers_file = expand('%:h') . '/._' . expand('%:t') . '.secret_markers'
 
 let s:fold_marker_left = split(&foldmarker, ',')[0]
 let s:fold_marker_right = split(&foldmarker, ',')[1]
 
+" {{{ Strip
+function! Strip(input_string)
+    return substitute(a:input_string, '^\s*\(.\{-}\)\s*$', '\1', '')
+endfunction
+" }}}
+" {{{ FindMarkers
 function! FindMarkers()
     " Store line number
     let initial_pos = line('.')
@@ -78,8 +86,10 @@ function! FindMarkers()
     endwhile
 
     if g:debug_secret_markers
-        echo start_lines
-        echo end_lines
+        echo "Start lines: "
+        echon start_lines
+        echo "End   lines: "
+        echon end_lines
     endif
 
     goto 1
@@ -119,7 +129,8 @@ function! FindMarkers()
 
     return [ fold_combinations, ordered_markers ]
 endfunction
-
+" }}}
+" {{{ RemoveMarkers
 function! RemoveMarkers()
     setlocal nofoldenable
 
@@ -128,8 +139,10 @@ function! RemoveMarkers()
     let ordered_markers = res[1]
 
     if g:debug_secret_markers
-        echo fold_combinations
-        echo ordered_markers
+        echo 'Fold combinations: '
+        echon fold_combinations
+        echo 'Ordered markers: '
+        echon ordered_markers
     endif
 
     " Send all output to the secret markers file
@@ -140,23 +153,31 @@ function! RemoveMarkers()
     " End sending output
     silent! redir END
 
-    " silent echo webapi#json#encode(fold_combinations)
+    silent echo webapi#json#encode(fold_combinations)
 
     for line_dict in reverse(ordered_markers)
-        let line_to_delete = keys(line_dict)[0]['content']
+        let line_to_delete = keys(line_dict)[0]
         " If we're going to delete the whole line, we don't even want it to
         " show up, so we just delete it
         if getline(line_to_delete) == line_dict[line_to_delete]['content']
+            if g:debug_secret_markers
+                echo "Removing the whole line {" . line_to_delete . "}: "
+                echon line_dict[line_to_delete]['content']
+            endif
             exec line_to_delete . ',' . line_to_delete . 'd'
         else
             " Otherwise, we're going to only delete from the start of our
             " comment and mark until the end of the line
-            echo "Not the same line " . line_to_delete
+            if g:debug_secret_markers
+                echo "Removing the part of the line {" . line_to_delete . "}: "
+                echon line_dict[line_to_delete]['content']
+            endif
             exec line_to_delete . ',' . line_to_delete . 's/' . line_dict[line_to_delete]['content'] . '//'
         endif
     endfor
 endfunction
-
+" }}}
+" {{{ GetMarkersFromSecretFile
 function! GetMarkersFromSecretFile()
     " This function sets the g:secret_markers_dict variable
     "   Format: [ {line_num: {'content': line_contents, 'append': 0/1}}, {line_num: {'content': line_contents, 'append': 0/1}}, ... ]
@@ -167,7 +188,8 @@ function! GetMarkersFromSecretFile()
         echo g:secret_markers_dict
     endif
 endfunction
-
+" }}}
+" {{{ InsertMarkersFromDict
 function! InsertMarkersFromDict()
     " This function will insert the lines back into the file
     "   It calls GetMarkersFromSecretFile first to set the
@@ -196,7 +218,8 @@ function! InsertMarkersFromDict()
         endif
     endfor
 endfunction
-
+" }}}
+" {{{ ParseLine
 function! ParseLine(line_num)
     " This function returns a string of what should be removed from the line
     " Returns:
@@ -217,7 +240,7 @@ function! ParseLine(line_num)
     if exists("&commentstring")
         " echo &commentstring
         let [l, r] = Surroundings()
-
+        let l = Strip(l)
         " TODO: Improve this searching?
         let commentstart = match(getline(a:line_num), l)
         if commentstart < 0
@@ -235,15 +258,45 @@ function! ParseLine(line_num)
         " If there is only white space in front of our return_line,
         "   then we can just return the whole line
         " Else, we just want to return from the comment onwards
-        if current_line =~ '^\s*' . return_line
+
+        " Case: <commentstring> <comment information> <foldmarker>
+        "   Have to make sure there is text between the comment and the marker
+        "   And then also check that it isn't the case we are examining the
+        "       other kind of marked line
+        if current_line !~ l . '\s*' . s:fold_marker_left && current_line !~ s:fold_marker_right
+            let foldstart = match(getline(a:line_num), '\s*' . s:fold_marker_left)
+            execute "let return_line = current_line[" . foldstart . ":]"
+
             if g:debug_secret_markers
-                echom ' line: ' . a:line_num . ' has only whitespace in front'
+                echom ' -- line: ' . a:line_num . ' has text between comment and left fold -- '
+                echom ' return: ' . return_line
+            endif
+
+            return return_line
+        "   Check the reverse case in terms of the folds
+        elseif current_line !~ l . '\s*' . s:fold_marker_right && current_line !~ s:fold_marker_left
+            let foldstart = match(getline(a:line_num), '\s*' . s:fold_marker_right)
+            execute "let return_line = current_line[" . foldstart . ":]"
+
+            if g:debug_secret_markers
+                echom ' -- line: ' . a:line_num . ' has text between comment and right fold -- '
+                echom ' return: ' . return_line
+            endif
+
+            return return_line
+        " Case: <whitespace> <commentstring> <foldmarker> <optional:text>
+        elseif current_line =~ '^\s*' . return_line
+            if g:debug_secret_markers
+                echom ' -- line: ' . a:line_num . ' has only whitespace in front -- '
+                echom ' return: ' . current_line
             endif
 
             return current_line
+        " Case: <some text> <commentstring> <foldmarker> <optional:text>
         else
             if g:debug_secret_markers
-                echom ' line: ' . a:line_num . ' has some text in front of it'
+                echom ' -- line: ' . a:line_num . ' has some text in front of it --'
+                echom ' return: ' . return_line
             endif
 
             return return_line
@@ -254,10 +307,12 @@ function! ParseLine(line_num)
         return getline(a:line_num)
     endif
 endfunction
-
+" }}}
+" {{{ Surroundings
+"   From tpope. Maybe this will get changed eventually?
 function! Surroundings() abort
   return split(get(b:, 'commentary_format', substitute(substitute(
         \ &commentstring, '\S\zs%s',' %s','') ,'%s\ze\S', '%s ', '')), '%s', 1)
 endfunction
-
+" }}}
 " vim: set foldlevel=4:

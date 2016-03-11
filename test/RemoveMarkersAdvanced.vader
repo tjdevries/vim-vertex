@@ -1,6 +1,9 @@
 
 Given python (A comment before the markers on the same line):
   first_line = 'Hello world'
+  # {{{
+  second_line = 'Regular fold'
+  # }}}
   # This is a comment {{{
   # Now inside the fold
   # }}}
@@ -13,6 +16,7 @@ Execute (Remove the folds):
 
 Expect python (Only the fold and the words after it to be removed):
   first_line = 'Hello world'
+  second_line = 'Regular fold'
   # This is a comment
   # Now inside the fold
     # Another comment
