@@ -90,23 +90,5 @@ Expect (Information before the marker to be removed):
     this is inside the fold
   no longer in the fold
 
-Given python (A comment before the markers on the same line):
-  first_line = 'Hello world'
-  # This is a comment {{{
-  # Now inside the fold
-  # }}}
-    # Another comment {{{ now with fold definitions on the outside
-  # Yup, inside the fold
-  # }}}
-
-Execute (Remove the folds):
-  call RemoveMarkers()
-
-Expect python (Only the fold and the words after it to be removed):
-  first_line = 'Hello world'
-  # This is a comment
-  # Now inside the fold
-    # Now another comment
-  # Yup, inside the fold
   
 # vim: set foldlevel=4:
