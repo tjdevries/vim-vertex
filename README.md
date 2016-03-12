@@ -1,16 +1,16 @@
 # vim-vertex
 
-Remove and insert Vim's `foldmarker`s.
+Remove and insert Vim's `foldmarkers`.
 
 ## Why `Vim-Vertex`
 
 **Vertex**: A point where two or more lines meet.
 
-In terms of this plugin, a **vertex** is a place where two or more lines _of code_ meet at one point. In VIM, this one point can be considered a `fold`, and the lines are marked by `foldmarker`s, and other editors don't always take advantage of them -- as well as the fact that you may have set custom fold markers. This plugin attempts to solve this problem by giving you simple commands to both remove and add back in your own custom `foldmarker`s.
+In terms of this plugin, a **vertex** is a place where two or more lines _of code_ meet at one point. In VIM, this one point can be considered a `fold`, and the lines are marked by `foldmarkers`, and other editors don't always take advantage of them -- as well as the fact that you may have set custom fold markers. This plugin attempts to solve this problem by giving you simple commands to both remove and add back in your own custom `foldmarkers`.
 
 ## What It Does
 
-This plugin allows you to keep your markers out of version control (or just files you pass back and forth) so that the non-VIM users do not have the code cluttered with Vim `foldmarker`s.
+This plugin allows you to keep your markers out of version control (or just files you pass back and forth) so that the non-VIM users do not have the code cluttered with Vim `foldmarkers`.
 
 The main idea is to add the capability of having `foldmarkers` inside of files, even version controlled files, but not having others have to view them. I think this is best done via example:
 
