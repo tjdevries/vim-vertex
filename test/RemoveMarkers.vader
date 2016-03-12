@@ -8,7 +8,7 @@ Given vim (Some text with no markers in it):
   this is outside of the fold
 
 Execute (Remove the folds [there are none]):
-  call RemoveMarkers()
+  VertexRemove
 
 Expect (Nothing changed):
   hello
@@ -25,7 +25,7 @@ Given vim (Some text with a single set of markers in it):
   no longer in a fold
 
 Execute (Remove the folds):
-  call RemoveMarkers()
+  VertexRemove
 
 Expect (Folds removed):
   first line
@@ -46,7 +46,7 @@ Given vim (Some text with embedded markers in it):
   outside of folds
 
 Execute (Remove the nested folds):
-  call RemoveMarkers()
+  VertexRemove
 
 Expect (Nested folds removed):
   first line
@@ -65,7 +65,7 @@ Given vim (Text after the markers):
   no more folding
 
 Execute (Remove markers, including info):
-  call RemoveMarkers()
+  VertexRemove
 
 Expect (Lines, including info, removed):
   first line
@@ -82,7 +82,7 @@ Given vim (Some text before  markers on the same line):
   no longer in the fold
 
 Execute (Remove the fold):
-  call RemoveMarkers()
+  VertexRemove
 
 Expect (Information before the marker to be removed):
   first line
