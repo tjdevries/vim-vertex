@@ -12,7 +12,7 @@ Given python (A comment before the markers on the same line):
   # Last line }}}
 
 Execute (Remove the folds):
-  call RemoveMarkers()
+  VertexRemove
 
 Expect python (Only the fold and the words after it to be removed):
   first_line = 'Hello world'

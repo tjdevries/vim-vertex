@@ -1,12 +1,12 @@
 #########################
-# Testing ParseLine
+# Testing vertex#parse_line
 #########################
 
 Given (Text with no markers):
   this is just a normal line of text
 
 Execute:
-  let res = ParseLine(1)
+  let res = vertex#parse_line(1)
   Assert res == ''
 
 ########################################
@@ -16,8 +16,8 @@ Given vim (Text with just a marker):
   " }}}
 
 Execute:
-  Assert ParseLine(1) == getline(1)
-  Assert ParseLine(2) == getline(2)
+  Assert vertex#parse_line(1) == getline(1)
+  Assert vertex#parse_line(2) == getline(2)
 
 ########################################
 
@@ -28,10 +28,10 @@ Given vim (Text with markers with spaces before it):
   " }}}
 
 Execute:
-  Assert ParseLine(1) == getline(1)
-  Assert ParseLine(2) == getline(2)
-  Assert ParseLine(3) == getline(3)
-  Assert ParseLine(4) == getline(4)
+  Assert vertex#parse_line(1) == getline(1)
+  Assert vertex#parse_line(2) == getline(2)
+  Assert vertex#parse_line(3) == getline(3)
+  Assert vertex#parse_line(4) == getline(4)
 
 ########################################
 
@@ -40,8 +40,8 @@ Given vim (Markers wih no space between comment):
       "}}}
 
 Execute:
-  Assert ParseLine(1) == getline(1)
-  Assert ParseLine(2) == getline(2)
+  Assert vertex#parse_line(1) == getline(1)
+  Assert vertex#parse_line(2) == getline(2)
 
 ########################################
 
@@ -50,8 +50,8 @@ Given vim (Text before comment):
   " }}}
 
 Execute:
-  Assert ParseLine(1) ==  '" {{{'
-  Assert ParseLine(2) == getline(2)
+  Assert vertex#parse_line(1) ==  '" {{{'
+  Assert vertex#parse_line(2) == getline(2)
 
 ########################################
 
@@ -70,9 +70,9 @@ Given python (Check with python):
 
 Execute:
   " TODO: Check all the lines correctly
-  " g/.*/Assert call ParseLine(line('.')) == getline(line('.'))
+  " g/.*/Assert call vertex#parse_line(line('.')) == getline(line('.'))
   " TODO: This currently does not work
-  " Assert ParseLine(2) == '  # now a comment after'
+  " Assert vertex#parse_line(2) == '  # now a comment after'
 
 ########################################
 

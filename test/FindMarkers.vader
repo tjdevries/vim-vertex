@@ -4,7 +4,7 @@ Given (Some text with no markers):
   final line
 
 Execute (Find no markers):
-  let res = FindMarkers()
+  let res = vertex#find_markers()
 
   " Fold combinations empty
   AssertEqual res[0], {}
@@ -21,7 +21,7 @@ Given (Some text with a simple markers):
   not in a fold
 
 Execute (Find 2 markers):
-  let res = FindMarkers()
+  let res = vertex#find_markers()
 
   " Fold combinations should only have the 0th combo, with the correct lines
   AssertEqual res[0], {'0': {'start': 2, 'end': 4}}
