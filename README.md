@@ -6,7 +6,9 @@ Remove and insert Vim's `foldmarkers`.
 
 **Vertex**: A point where two or more lines meet.
 
-In terms of this plugin, a **vertex** is a place where two or more lines _of code_ meet at one point. In VIM, this one point can be considered a `fold`, and the lines are marked by `foldmarkers`, and other editors don't always take advantage of them -- as well as the fact that you may have set custom fold markers. This plugin attempts to solve this problem by giving you simple commands to both remove and add back in your own custom `foldmarkers`.
+In terms of this plugin, a **vertex** is a place where two or more lines _of code_ meet at one point. In VIM, this one point can be considered a `fold`, and the lines are marked by `foldmarkers`. 
+
+As many of us know and have experienced, other editors don't always take advantage of them. For me, that meant not being able to use them in code that I was collaborating on. This plugin attempts to solve this problem by giving you simple commands to both remove and add back in your own custom `foldmarkers`.
 
 ## What It Does
 
@@ -40,7 +42,7 @@ class NewClass:
     # }}}
 ```
 
-After running `RemoveMarkers()`, vim-vertex will remove all of the fold markers. It will then look like the file below.
+After running `VertexRemove`, vim-vertex will remove all of the fold markers. It will then look like the file below.
 
 ```python
 # This is a python file
@@ -61,7 +63,7 @@ class NewClass:
         return True
 ```
 
-It stores the information required to place those folds back in another file (this could be changed if someone thinks of a better way!). To place them back, simply call `InsertMarkers()`. Then the file will look like its original state.
+It stores the information required to place those folds back in another file (this could be changed if someone thinks of a better way!). To place them back, simply call `VertexInsert`. Then the file will look like its original state.
 
 ## Requirements
 
@@ -70,6 +72,11 @@ For this plugin to be useful to you, these things should be true.
 1. `foldmethod=marker`: I'm not really sure why you would be using this otherwise
 
 Maybe this plugin is now `foldmarker` agnostic. I'm not sure yet. Still working on some other things currently
+
+## TODO
+
+- Integrate with Git, so that the vertices will be placed in the right location after someone else has made changes to the files.
+- Continue to add to the README. My intro is unconvincing in my opinion :( 
 
 ## Testing
 
