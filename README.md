@@ -82,8 +82,7 @@ Maybe this plugin is now `foldmarker` agnostic. I'm not sure yet. Still working 
 
 ## TODO
 
-- Implement a configurable save point for the marker dictionary
-- Integrate with Git, so that the vertices will be placed in the right location after someone else has made changes to the files.
+Please see the `TODO` tracker in this repository's issues section.
 
 ## Testing
 
