@@ -1,27 +1,26 @@
-
-
-
 # vim-vertex
+![TravisBuild](https://travis-ci.org/tjdevries/vim-vertex.svg?branch=master)
 
 Remove and insert Vim's `foldmarkers`.
 
 ## Why `Vim-Vertex`
 
-**Vertex**: A point where two or more lines meet.
+**Vertex**: A point where two or more demarcations meet.
 
-In terms of this plugin, a **vertex** is a place where two or more lines _of code_ meet at one point. In VIM, this one point can be considered a `fold`, and the lines are marked by `foldmarkers`. 
+In terms of this plugin, a **vertex** is a place where two or more de - _MARK_ - ations meet at one point. In VIM, this one point can be considered a `fold` and the outline is marked by `foldmarkers`. 
 
-As many of us know and have experienced, other editors don't always take advantage of them. For me, that meant not being able to use them in code that I was collaborating on. This plugin attempts to solve this problem by giving you simple commands to both remove and add back in your own custom `foldmarkers`.
+As many of us know and have experienced, other editors don't always take advantage of them. For me, that meant not being able to use them in code that I was collaborating on. This plugin attempts to solve this problem by giving you simple commands to both remove and add back in your own `foldmarkers`.
 
 ## What It Does
 
-This plugin allows you to keep your markers out of version control (or just files you pass back and forth) so that the non-VIM users do not have the code cluttered with Vim `foldmarkers`.
+This plugin allows you to keep your markers out of version control (or just files you pass back and forth) so that the non-VIM users do not have the code "cluttered" with Vim `foldmarkers`.
 
-The main idea is to add the capability of having `foldmarkers` inside of files, even version controlled files, but not having others have to view them. I think this is best done via example:
+The main idea is to add the capability of having `foldmarkers` inside of files, even version controlled files, but not having others have to view them. I think this is best explained via example:
 
 ### Example
 
 ```python
+#!/usr/bin/python
 # This is a python file
 
 # Regular comment
@@ -29,13 +28,16 @@ def new_function():
     pass
 
 # {{{
-'''docstring here'''
+'''world's coolest python thing'''
 # }}}
 
 # Comment with a fold after it {{{ this stuff will go away
 class NewClass:
     def __init__(self):
+        # {{{ Personal note regarding what is coming up
+        # This comment gives insight
         pass
+        # }}}
 
     # {{{ Works on nested folds
     @property
@@ -48,17 +50,19 @@ class NewClass:
 After running `VertexRemove`, vim-vertex will remove all of the fold markers. It will then look like the file below.
 
 ```python
+#!/usr/bin/python
 # This is a python file
 
 # Regular comment
 def new_function():
     pass
 
-'''docstring here'''
+'''world's coolest python thing'''
 
 # Comment with a fold after it
 class NewClass:
     def __init__(self):
+        # This comment gives insight
         pass
 
     @property
@@ -78,9 +82,9 @@ Maybe this plugin is now `foldmarker` agnostic. I'm not sure yet. Still working 
 
 ## TODO
 
+- Implement a configurable save point for the marker dictionary
 - Integrate with Git, so that the vertices will be placed in the right location after someone else has made changes to the files.
-- Continue to add to the README. My intro is unconvincing in my opinion :( 
 
 ## Testing
 
-Attempting to write tests with Vader. I am working on making sure it works well on Travis as well (this is my first project using it).
+I am using Vader as my testing suite. You can see the tests in the `test` folder.
