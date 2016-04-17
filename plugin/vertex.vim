@@ -17,5 +17,6 @@ let g:debug_secret_markers = 0
 
 command -bar VertexRemove call vertex#remove_markers()
 command -bar VertexInsert call vertex#insert_markers()
+" }}}
 
 " vim: set foldlevel=4:
