@@ -22,3 +22,35 @@ Expect python (Only the fold and the words after it to be removed):
     # Another comment
   # Yup, inside the fold
   # Last line
+
+Given python (Comments and folds after regular text on the same line):
+  first_line = 'hi'
+  # {{{
+  second_line = '??'  # This line needs explaining {{{
+  # Hanging out in the fold
+  # }}}
+  # }}}
+
+  def function(a, b):  # Words inside here {{{ Function function
+    '''Obviously a function function. Nice!'''
+    x = a  # {{{ No words before this one
+    y = b  # }}}
+    return x + y
+  # }}}
+
+Execute (Remove the folds):
+  " TODO: Maybe there shouldn't be that whitespace after `x = a` and the following line
+  "   I can try and fix that, but we'll have to see what happens there. I don't want
+  "   the white space to be deleted later though and left behind
+  VertexRemove
+
+Expect python (All the regular stuff should be there):
+  first_line = 'hi'
+  second_line = '??'  # This line needs explaining
+  # Hanging out in the fold
+
+  def function(a, b):  # Words inside here
+    '''Obviously a function function. Nice!'''
+    x = a  
+    y = b  
+    return x + y

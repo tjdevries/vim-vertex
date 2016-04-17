@@ -126,9 +126,6 @@ function! vertex#remove_markers()
     execute 'redir! > ' vertex#util#set_markers_file()
     silent echo 'let b:secret_markers_dict = '
     silent echon ordered_markers
-    " silent echo webapi#json#encode(fold_combinations)
-
-    " End sending output
     silent! redir END
 
 

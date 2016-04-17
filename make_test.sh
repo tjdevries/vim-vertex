@@ -1,7 +1,7 @@
 #!/bin/bash
 
 debug=0
-newtest=1
+newtest=$1
 
 if [ $newtest -eq 0 ]; then
     for filename in ./test/*; do
