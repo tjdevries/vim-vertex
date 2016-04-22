@@ -1,7 +1,5 @@
 #!/bin/bash
-
-echo 'Tracking line numbers through git history'
-
+echo 'Tracking line numbers through history'
 PARAMS="$*" 
 LINE=$(git blame $PARAMS) 
 while test $? == 0 
