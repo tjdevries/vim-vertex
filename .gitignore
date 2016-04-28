@@ -1,2 +1,3 @@
 *tags*
 *.secret_markers
+./log*
