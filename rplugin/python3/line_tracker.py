@@ -2,27 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
-from git import Repo
 from Levenshtein import distance
-
-repo = Repo('/home/tj_chromebook/Git/vim-vertex/')
-
-hcommit = repo.head.commit
-
-# print(hcommit.diff('HEAD~1'))
-
-# for diff_added in hcommit.diff('HEAD~1'):
-#     for obj in dir(diff_added):
-#         print(obj, ':', getattr(diff_added, obj))
-
-# for diff_added in hcommit.diff('HEAD~1').iter_change_type('M'):
-#     print(diff_added.diff)
-
-# for line in repo.git.diff('HEAD~1').split(sep='\n'):
-#     if line[0] in ['-', '+']:
-#         print(line)
-
-# print()
 
 debug = True
 
@@ -47,13 +27,6 @@ formatter = logging.Formatter('%(name)s | %(levelname)s: %(message)s')
 fh.setFormatter(formatter)
 logger.addHandler(fh)
 # }}}
-
-h1 = '979d2007e5fb828012b59a6849606c245eec7d36'
-h2 = '5515357e1be31c29b8ed58b1334e2ac8e614c9aa'
-
-file_name = 'track_line.sh'
-
-find = "echo 'Tracking line numbers through git history'"
 
 
 def get_diff(hash1, hash2, repo, debug=False):
@@ -88,6 +61,9 @@ def get_diff_object(diff, filename, repo, debug=False):
 def get_diff_text(repo, this_diff):
     return repo.git.diff(this_diff.a_blob, this_diff.b_blob)
 
+def get_diff_text_lines(diff_text):
+    return diff_text.split('\n')[4:]
+
 
 def find_similar_line(find, prefix, line_list):
     """
@@ -97,7 +73,10 @@ def find_similar_line(find, prefix, line_list):
     @param prefix: If None, then it is ignored,
         otherwise, the returned index must contain the prefix as the first chracter
     @param line_list: A list of strings that we are comparing to
+
+    @returns: This returns the index of the line_list where the new line resides
     """
+    # res[distance, index]
     res = [9999, 0]
     for index in range(len(line_list)):
         line = line_list[index]
@@ -129,8 +108,10 @@ def find_diffed_line(find, prefix, line_list):
     b_range = [0, 0]
 
     lines = {'+': 0, '-': 0, ' ': 0}
-    for index in range(4, len(diff_lines)):
-        line = diff_lines[index]
+
+    # for index in range(4, len(line_list)):
+    for index in range(len(line_list)):
+        line = line_list[index]
 
         if line[0] not in ['+', '-', '@']:
             lines[' '] += 1
@@ -152,29 +133,6 @@ def find_diffed_line(find, prefix, line_list):
                 find, index, lines[' '] + lines[prefix]))
 
             return lines[' '] + lines[prefix]
-
-current_diff = get_diff(h1, h2, repo)
-diff_obj = get_diff_object(current_diff, file_name, repo, debug)
-diff_text = get_diff_text(repo, diff_obj)
-
-# {{{
-if debug:
-    print('================================================================================')
-    print('Original')
-    print('================================================================================')
-    print(diff_text)
-    print('================================================================================')
-# }}}
-
-diff_lines = diff_text.split('\n')
-
-orig_line = find_diffed_line(find, '-', diff_lines)
-print('Orig Line Number: {0}\n\tOrig Line: {1}'.format(orig_line, find))
-
-new_index = find_similar_line(find, '+', diff_lines)
-new_find = diff_lines[new_index][1:]
-new_line = find_diffed_line(new_find, '+', diff_lines)
-print('New Line Number: {0}\n\tNew Line: {1}'.format(new_line, new_find))
 
 
 def get_line(line_number, prefix, diff_lines):

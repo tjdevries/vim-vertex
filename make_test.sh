@@ -3,8 +3,8 @@
 debug=0
 newtest=$1
 
-if [ $newtest -eq 0 ]; then
-    for filename in ./test/*; do
+if [[ $newtest -eq 1 ]]; then
+    for filename in ./test/vim/*; do
         echo 'Testing filename ' $filename
         if [ $debug -eq 0 ]; then
             nvim -n +Vader! $filename > /dev/null && echo Success || echo Failure
@@ -12,9 +12,9 @@ if [ $newtest -eq 0 ]; then
             nvim -n +Vader $filename
         fi
     done
-else
+elif [[ $newtest -eq 2 ]]; then
     echo "New testing strategy"
-    for filename in ./test/*; do
+    for filename in ./test/vim/*; do
         echo "Testing filename " $filename
 vim -Nu <(cat << VIMRC
 filetype off
@@ -26,6 +26,9 @@ syntax enable
 VIMRC) -c "+Vader! $filename" > /dev/null
     done
 fi
+
+export PYTHONPATH=~/Git/vim-vertex/rplugin/python3/
+py.test
 
 # Alternative method... Not sure I want to do that yet
 # nvim -nu <(cat << VIMRC
