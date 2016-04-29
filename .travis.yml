@@ -4,7 +4,7 @@ before_script: |
   git clone https://github.com/junegunn/vader.vim.git
 
 script: |
-  for filename in ./test/*; do
+  for filename in ./test/vim/*; do
     echo "Testing filename " $filename
   vim -Nu <(cat << VIMRC
   filetype off
