@@ -2,8 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import logging
+import neovim
+from git import Repo
 from Levenshtein import distance
 
+nvim = neovim.attach('child', argv=["/usr/bin/env", "nvim", "--embed"])
 debug = True
 
 # {{{ Logging configuration
@@ -159,6 +162,36 @@ def get_line(line_number, prefix, diff_lines):
 
 def get_something():
     pass
+
+@neovim.function('_line_example')
+def tj_stuff(*args):
+    repo = Repo('/home/tj_chromebook/Git/vim-vertex/')
+
+    # TODO: Parameterize this somewhere, or make it not dependent on my repo?
+    #   Also need to add a few more examples at some point
+    h1 = '979d2007e5fb828012b59a6849606c245eec7d36'
+    h2 = '5515357e1be31c29b8ed58b1334e2ac8e614c9aa'
+    
+    file_name = 'track_line.sh'
+
+    find = "echo 'Tracking line numbers through git history'"
+
+    current_diff = get_diff(h1, h2, repo)
+    diff_obj = get_diff_object(current_diff, file_name, repo, debug)
+    diff_text = get_diff_text(repo, diff_obj)
+    diff_lines = diff_text.split('\n')
+
+    orig_line = find_diffed_line(find, '-', diff_lines)
+    # print('Orig Line Number: {0}\n\tOrig Line: {1}'.format(orig_line, find))
+
+    new_index = find_similar_line(find, '+', diff_lines)
+    new_find = diff_lines[new_index][1:]
+    new_line = find_diffed_line(new_find, '+', diff_lines)
+    # print('New Line Number: {0}\n\tNew Line: {1}'.format(new_line, new_find))
+    # buffer = nvim.buffers[0]
+    # buffer[0] = str(new_line)
+
+    nvim.vars['this_line'] = str(new_find)
 
 # current_diff = c1.diff(c2)
 
