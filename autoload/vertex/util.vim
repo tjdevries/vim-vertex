@@ -33,3 +33,43 @@ function! vertex#util#surroundings() abort
         \ &commentstring, '\S\zs%s',' %s','') ,'%s\ze\S', '%s ', '')), '%s', 1)
 endfunction
 " }}}
+
+" {{{ combine_ordered_lists
+function! vertex#util#combine_ordered_lists(first, second) abort
+    let ordered = []
+
+    let i1 = 0
+    let i2 = 0
+    let len1 = len(a:first)
+    let len2 = len(a:second)
+
+    while i1 < len1 || i2 < len2
+        let current_obj = {}
+        let line_1 = vertex#util#get_line_num(a:first, i1)
+        let line_2 = vertex#util#get_line_num(a:second, i2)
+
+        if  line_1 < line_2
+            let current_obj = a:first[i1]
+            let i1 = i1 + 1
+        else
+            let current_obj = a:second[i2]
+            let i2 = i2 + 1
+        endif
+
+        call add(ordered, current_obj)
+    endwhile
+
+    return ordered
+endfunction
+" }}}
+
+" {{{ get_line_num
+function! vertex#util#get_line_num(list, index) abort
+    if a:index >= len(a:list)
+        " TODO: Is this big enough? xD
+        return 99999
+    else
+        return keys(a:list[a:index])[0]
+    endif
+endfunction
+" }}}

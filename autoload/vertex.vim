@@ -1,22 +1,14 @@
 " Vertex.vim main functions
 
 " {{{1 Making Vertices Disappear
-" {{{2 find_markers
-function! vertex#find_markers()
+" {{{2 search_markers
+function! vertex#search_markers(marker)
     " Store line number
     let initial_pos = line('.')
-    if g:debug_secret_markers
-        echom 'Finding markers...'
-    endif
-
     goto 1
 
-    let ordered_markers = []
-    let ordered_index = 0
-
-    let start_lines = []
-    let fold_number = 0
-    while search(vertex#util#get_left_fold_marker(), 'W') > 0
+    let storage = []
+    while search(a:marker, 'W') > 0
         let line_num = line('.')
         let line_content = vertex#parse_line(line_num)
         let line_dict = {}
@@ -30,48 +22,15 @@ function! vertex#find_markers()
             let line_dict[line_num]['append'] = 1
         endif
 
-        call add(start_lines, line_num)
-        call add(ordered_markers, line_dict)
-
-        let fold_number = fold_number + 1
+        call add(storage, line_dict)
     endwhile
 
-    goto 1
-    let end_lines = []
-    while search(vertex#util#get_right_fold_marker(), 'W') > 0
-        let line_num = line('.')
-        let line_content = vertex#parse_line(line_num)
-        let line_dict = {}
-        let line_dict[line_num] = {}
-        let line_dict[line_num]['content'] = line_content
-
-        " Check if the line should be appended to the original line or not
-        if getline('.') == line_content
-            let line_dict[line_num]['append'] = 0
-        else
-            let line_dict[line_num]['append'] = 1
-        endif
-
-        call add(end_lines, line_num)
-
-        while keys(ordered_markers[ordered_index])[0] < line_num
-            let ordered_index = ordered_index + 1
-
-            if ordered_index == len(ordered_markers)
-                break
-            endif
-        endwhile
-        call insert(ordered_markers, line_dict, ordered_index)
-    endwhile
-
-    if g:debug_secret_markers
-        echo "Start lines: "
-        echon start_lines
-        echo "End   lines: "
-        echon end_lines
-    endif
-
-    goto 1
+    return storage
+endfunction
+" }}}
+" {{{2 find_couples
+function! vertex#find_couples()
+    " TODO: Find the fold number
 
     " Connect the fold dictionaries
     let start_ind = 0
@@ -100,24 +59,41 @@ function! vertex#find_markers()
             unlet start_lines[start_ind - 1]
             let start_ind = 0
             let end_ind = end_ind + 1
-
         endif
     endwhile
+endfunction
+" }}}
+" {{{2 find_markers
+function! vertex#find_markers()
+    if g:debug_secret_markers
+        echom 'Finding markers...'
+    endif
+
+    let start_lines = vertex#search_markers(vertex#util#get_left_fold_marker())
+    let end_lines = vertex#search_markers(vertex#util#get_right_fold_marker())
+
+    let ordered_markers = vertex#util#combine_ordered_lists(start_lines, end_lines)
+
+    if g:debug_secret_markers
+        echo "Start lines: "
+        echon start_lines
+        echo "End   lines: "
+        echon end_lines
+    endif
 
     " initial_pos
+    " goto initial_pos
 
-    return [ fold_combinations, ordered_markers ]
+    return ordered_markers
 endfunction
 " }}}
 " {{{2 remove_markers
 function! vertex#remove_markers()
     setlocal nofoldenable
 
-    let [fold_combinations, ordered_markers] = vertex#find_markers()
+    let ordered_markers = vertex#find_markers()
 
     if g:debug_secret_markers
-        echo 'Fold combinations: '
-        echon fold_combinations
         echo 'Ordered markers: '
         echon ordered_markers
     endif

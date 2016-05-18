@@ -6,10 +6,8 @@ Given (Some text with no markers):
 Execute (Find no markers):
   let res = vertex#find_markers()
 
-  " Fold combinations empty
-  AssertEqual res[0], {}
   " Order combinations empty
-  AssertEqual res[1], []
+  AssertEqual res, []
 
 ########################################
 
@@ -23,7 +21,5 @@ Given (Some text with a simple markers):
 Execute (Find 2 markers):
   let res = vertex#find_markers()
 
-  " Fold combinations should only have the 0th combo, with the correct lines
-  AssertEqual res[0], {'0': {'start': 2, 'end': 4}}
   " Order markers should have them show up in order
-  AssertEqual res[1], [{'2': {'content': '{{{', 'append': 0}}, {'4': {'content': '}}}', 'append': 0}}]
+  AssertEqual res, [{'2': {'content': '{{{', 'append': 0}}, {'4': {'content': '}}}', 'append': 0}}]
