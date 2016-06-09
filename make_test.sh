@@ -16,7 +16,7 @@ elif [[ $newtest -eq 2 ]]; then
     echo "New testing strategy"
     for filename in ./test/vim/*; do
         echo "Testing filename " $filename
-vim -Nu <(cat << VIMRC
+nvim -Nu <(cat << VIMRC
 filetype off
 set rtp+=~/.config/nvim/plugged/vader.vim/
 set rtp+=.
